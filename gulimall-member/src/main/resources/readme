@@ -1,0 +1,8 @@
+1.开启Feign步骤
+  ①调用者pom文件中引入Feign依赖
+  ②调用者创建一个Feign文件夹专门编辑Feign类，此类是个接口
+    RequestMapping和方法签名都直接复制被调用者的，这样即可定位
+  ③调用者在启动类上添加@EnableFeignClients注解，开启Feign调用功能
+2.nacos作为配置中心的步骤
+  ①引入依赖
+  ②

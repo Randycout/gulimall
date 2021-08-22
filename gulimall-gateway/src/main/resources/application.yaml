@@ -1,0 +1,47 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test_route
+          uri: http://www.randycout.com
+          predicates:
+            - Query=url,randycout
+        - id: qq_route
+          uri: https://www.qq.com
+          predicates:
+            - Query=url,qq
+        - id: zhihu_route
+          uri: https://www.zhihu.com
+          predicates:
+              - Query=url,zhihu
+
+      #商品服务路由(精確的路由放前面,不然会被范围大的路由拦截)
+      ##  真正发送的请求如是http://localhost:88/api/product/category/list/tree
+      ##  而我所需要的是localhost:10000/product/category/list/tree
+        - id: product_route
+          uri: lb://gulimall-product
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+        ## 前端项目,发送请求都带上/api/前缀
+        ## http://localhost:88/api/captcha.jpa -> http://renren-fast:8080/api/captcha.jpg
+        ## 但实际我们要的路径是http://localhost:8080/renren-fast/captcha.jpg,这时就需要filter完成路径重写
+        ##前台只要发送/api/就会先路由到renren-fast(localhost:8080),并且会自动添加/renren-fast/+真实路径
+
+        #所有第三方都负载均衡到gulimall-third-party 服务
+        #自动加上/api/thirdparty/在截取oss/policy这段 (默认路径:http://localhost:30000/oss/policy)
+        - id: third_party_route
+          uri: lb://gulimall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>.*),/$\{segment}
+        - id: admin_route
+          uri: lb://renren-fast    #lb代表的是负载均衡(localhost:8080)
+          predicates:
+            - Path=/api/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}
+
+

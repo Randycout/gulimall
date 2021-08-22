@@ -1,0 +1,18 @@
+server:
+  port: 30000
+spring:
+  cloud:
+    nacos:
+      #nacos服务发现
+      discovery:
+        server-addr: 127.0.0.1:8848
+    #阿里云对象存储oss设置
+    alicloud:
+      access-key: LTAI5tB5ne7EvHC2sRurmkZL
+      secret-key: NIyxEQ1gLBCFTqCjCPs0Y39dYl81yT
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        bucket: gulimall-randy
+logging:
+  level:
+    com.chen.gulimall: debug
